@@ -11,6 +11,16 @@ module SN74LS195Abehavior(Q, P, Q3not, PE, J, K, CP, MR);
 	parameter LENGTH = 4;
 	input PE, J, K, CP, MR;
 	input [LENGTH-1:0] P;
-	output [LENGTH-1:0] Q;
+	output reg [LENGTH-1:0] Q;
 	output Q3not;
+	
+	always @ (posedge CP or negedge MR)
+		if (MR == 0) Q <= 0;
+		else if (PE == 0)
+		Q <= P;
+		else if (PE == 1)
+		Q <= { Q[LENGTH-2:0], (~Q[0]&J)|(Q[0]&K) };
+		
+	assign Q3not = ~Q[3];
+	
 endmodule
